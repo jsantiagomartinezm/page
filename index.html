@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juan Santiago Martínez — Compositor · Productor · Diseñador Sonoro</title>
+  <meta name="description" content="Compositor, productor musical y diseñador de sonido. Especializado en la relación Música–Sonido–Imagen para proyectos audiovisuales." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:           #0a0c10;
+      --surface:      #111318;
+      --border:       rgba(255,255,255,0.07);
+      --text:         #eceae6;
+      --muted:        rgba(236,234,230,0.42);
+      --accent:       #ff5e00;
+      --accent2-light:#4a7aaa;
+      --font-serif:   'Cormorant Garamond', Georgia, serif;
+      --font-mono:    'DM Mono', 'Courier New', monospace;
+      --ease:         cubic-bezier(0.16,1,0.3,1);
+      --transition:   0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--font-mono); font-weight: 300;
+      letter-spacing: 0.01em; line-height: 1.7; overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.038; pointer-events: none; z-index: 9999;
+    }
+
+    /* ─── NAV — escritorio ───────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 3rem;
+      background: linear-gradient(to bottom, rgba(10,12,16,0.97) 0%, transparent 100%);
+      backdrop-filter: blur(4px);
+    }
+    .nav-logo {
+      font-family: var(--font-serif); font-size: 1.1rem;
+      font-weight: 400; letter-spacing: 0.05em;
+    }
+    .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+    .nav-links a {
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); transition: color var(--transition); position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: var(--accent); transition: width var(--transition);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .lang-toggle { display: flex; gap: 0.3rem; align-items: center; }
+    .lang-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); padding: 0.2rem 0.4rem; transition: color var(--transition);
+    }
+    .lang-btn.active { color: var(--accent); }
+    .lang-btn:hover { color: var(--text); }
+    .lang-sep { color: var(--border); font-size: 0.8rem; }
+
+    /* ─── NAV — hamburguesa (solo móvil) ─────────────────────── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column; justify-content: center; gap: 5px;
+      width: 36px; height: 36px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+      z-index: 101;
+    }
+    .nav-hamburger span {
+      display: block; width: 100%; height: 1px;
+      background: var(--text);
+      transition: transform var(--transition), opacity var(--transition), width var(--transition);
+      transform-origin: center;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    /* ─── NAV — menú overlay móvil ───────────────────────────── */
+    .nav-mobile-menu {
+      display: none;
+      position: fixed; inset: 0; z-index: 99;
+      background: rgba(10,12,16,0.98);
+      backdrop-filter: blur(12px);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 2.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s var(--ease);
+    }
+    .nav-mobile-menu.open { opacity: 1; pointer-events: all; }
+    .nav-mobile-menu a {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 8vw, 3rem); font-weight: 300; letter-spacing: 0.02em;
+      color: var(--muted); transition: color var(--transition);
+    }
+    .nav-mobile-menu a:hover { color: var(--accent); }
+    .nav-mobile-lang { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+    .nav-mobile-lang .lang-btn { font-size: 0.72rem; padding: 0.3rem 0.6rem; }
+    .nav-mobile-menu::after {
+      content: '';
+      position: absolute; bottom: 14%; left: 50%; transform: translateX(-50%);
+      width: 1px; height: 70px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 3rem 5rem; position: relative; overflow: hidden;
+    }
+    #hero::after {
+      content: ''; position: absolute; bottom: -10%; right: -5%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255,94,0,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-lines { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .hero-line { position: absolute; background: var(--border); }
+    .hero-line.h { height: 1px; left: 0; right: 0; }
+    .hero-line.v { width: 1px; top: 0; bottom: 0; }
+    .hero-line:nth-child(1) { top: 33%; }
+    .hero-line:nth-child(2) { top: 66%; }
+    .hero-line:nth-child(3) { left: 60%; }
+
+    .hero-tag {
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 1s var(--ease) 0.2s forwards;
+    }
+    .hero-name {
+      font-family: var(--font-serif);
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 300; line-height: 0.95; letter-spacing: -0.01em;
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 1s var(--ease) 0.35s forwards;
+    }
+    .hero-name em { font-style: italic; color: var(--accent); }
+    .hero-roles {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 1s var(--ease) 0.5s forwards;
+    }
+    .hero-roles span { position: relative; }
+    .hero-roles span:not(:last-child)::after {
+      content: '·'; position: absolute; right: -1.2rem; color: rgba(255,94,0,0.35);
+    }
+    .hero-scroll {
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); display: flex; align-items: center; gap: 1rem;
+      opacity: 0; animation: fadeUp 1s var(--ease) 0.7s forwards;
+    }
+    .hero-scroll::before { content: ''; width: 40px; height: 1px; background: var(--accent); opacity: 0.5; }
+
+    /* ─── SECTIONS ───────────────────────────────────────────── */
+    section { padding: 7rem 3rem; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--accent2-light); display: flex; align-items: center; gap: 1rem; margin-bottom: 4rem;
+    }
+    .section-label::before { content: ''; width: 30px; height: 1px; background: var(--accent); }
+
+    /* ─── ABOUT ──────────────────────────────────────────────── */
+    #about .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .about-heading { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; line-height: 1.15; margin-bottom: 2.5rem; }
+    .about-heading em { font-style: italic; color: var(--accent); }
+    .about-body { font-size: 0.85rem; line-height: 1.9; color: var(--muted); margin-bottom: 1.5rem; }
+    .about-skills { margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 2rem; }
+    .skills-title { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
+    .skills-list { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .skill-tag {
+      font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted);
+      border: 1px solid var(--border); padding: 0.3rem 0.8rem;
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ─── CV DOWNLOAD ────────────────────────────────────────── */
+    .cv-download {
+      display: flex; align-items: center; gap: 1.2rem;
+      margin-top: 2rem; padding: 1.1rem 1.5rem;
+      border: 1px solid var(--accent);
+      position: relative; overflow: hidden;
+      transition: color var(--transition);
+    }
+    .cv-download::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--accent);
+      transform: translateX(-100%);
+      transition: transform 0.45s var(--ease);
+    }
+    .cv-download:hover::before { transform: translateX(0); }
+    .cv-download:hover { color: #fff; }
+
+    .cv-download-icon {
+      position: relative; flex-shrink: 0;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cv-download-icon svg { width: 20px; height: 20px; stroke: var(--accent); transition: stroke var(--transition); }
+    .cv-download:hover .cv-download-icon svg { stroke: #fff; }
+
+    .cv-download-text { position: relative; display: flex; flex-direction: column; gap: 0.15rem; flex: 1; }
+    .cv-download-title {
+      font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--text); transition: color var(--transition);
+    }
+    .cv-download:hover .cv-download-title { color: #fff; }
+    .cv-download-sub {
+      font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); transition: color var(--transition);
+    }
+    .cv-download:hover .cv-download-sub { color: rgba(255,255,255,0.7); }
+
+    .cv-download-arrow {
+      position: relative; font-size: 1rem; color: var(--accent);
+      transition: transform var(--transition), color var(--transition);
+    }
+    .cv-download:hover .cv-download-arrow { transform: translateX(4px); color: #fff; }
+    .about-education { display: flex; flex-direction: column; gap: 2rem; }
+    .edu-item { border-left: 1px solid var(--border); padding-left: 1.5rem; transition: border-color var(--transition); }
+    .edu-item:hover { border-color: var(--accent); }
+    .edu-year { font-size: 0.62rem; letter-spacing: 0.15em; color: var(--accent2-light); margin-bottom: 0.3rem; }
+    .edu-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 400; color: var(--text); margin-bottom: 0.2rem; }
+    .edu-inst { font-size: 0.72rem; color: var(--muted); }
+
+    /* ─── REEL ───────────────────────────────────────────────── */
+    .reel-player {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #000;
+    }
+    .reel-player iframe {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      border: none;
+    }
+    .reel-meta {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 1.2rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .reel-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+    }
+    .reel-year {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent2-light);
+    }
+
+    /* ─── PROJECTS GRID ──────────────────────────────────────── */
+    .projects-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5px; background: var(--border); border: 1px solid var(--border);
+    }
+    .project-card {
+      position: relative; overflow: hidden;
+      min-height: 320px; display: flex; flex-direction: column;
+      cursor: pointer;
+    }
+
+    /* imagen ocupa todo el card */
+    .project-img {
+      position: absolute; inset: 0;
+    }
+    .project-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.7s var(--ease);
+    }
+    .project-card:hover .project-img img { transform: scale(1.06); }
+    .project-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--surface) 0%, #080b11 100%);
+      font-family: var(--font-serif); font-size: 1.8rem; font-style: italic;
+      color: rgba(255,94,0,0.12); user-select: none;
+    }
+
+    /* overlay info: mitad inferior, blur + transparente */
+    .project-body {
+      position: relative; margin-top: auto;
+      padding: 1.4rem 1.8rem 1.6rem;
+      display: flex; flex-direction: column;
+      background: rgba(10,12,16,0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      transition: background var(--transition);
+    }
+    .project-card:hover .project-body { background: rgba(10,12,16,0.72); }
+
+    .project-type { font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent2-light); margin-bottom: 0.35rem; }
+    .project-title { font-family: var(--font-serif); font-size: 1.35rem; font-weight: 400; font-style: italic; color: var(--text); margin-bottom: 0.2rem; line-height: 1.2; }
+    .project-client { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.9rem; }
+    .project-footer { display: flex; align-items: center; justify-content: space-between; }
+    .project-role { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+    .project-role::before { content: ''; width: 14px; height: 1px; background: var(--accent); }
+    .project-link {
+      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 0.4rem;
+      border: 1px solid rgba(255,255,255,0.15); padding: 0.26rem 0.6rem;
+      transition: color var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .project-link svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .project-link:hover { color: var(--accent); border-color: rgba(255,94,0,0.4); background: rgba(255,94,0,0.08); }
+
+    /* ─── TARJETA "VER TODOS LOS PROYECTOS" ─────────────────── */
+    .all-projects-card {
+      background: var(--bg);
+      display: flex; align-items: stretch;
+      min-height: 300px; cursor: pointer;
+      position: relative; overflow: hidden;
+      transition: background var(--transition);
+    }
+    .all-projects-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at bottom right, rgba(255,94,0,0.1) 0%, transparent 65%);
+      opacity: 0; transition: opacity var(--transition);
+    }
+    .all-projects-card:hover { background: #0d0f14; }
+    .all-projects-card:hover::before { opacity: 1; }
+
+    .all-projects-inner {
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 2rem 2rem 1.8rem; width: 100%;
+    }
+    .all-projects-label {
+      font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--accent2-light);
+    }
+    .all-projects-heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+      font-weight: 300; font-style: italic;
+      line-height: 1.15; color: var(--text);
+      transition: color var(--transition);
+    }
+    .all-projects-card:hover .all-projects-heading { color: var(--accent); }
+    .all-projects-arrow {
+      display: flex; align-items: center; justify-content: flex-end;
+    }
+    .all-projects-arrow svg {
+      width: 36px; height: 36px;
+      stroke: var(--accent); opacity: 0.5;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+    .all-projects-card:hover .all-projects-arrow svg {
+      transform: translate(4px, -4px); opacity: 1;
+    }
+
+    /* ─── TARJETA 17-70 ──────────────────────────────────────── */
+    .studio-separator {
+      display: flex; align-items: center; gap: 1.5rem;
+      padding: 3rem 0 2rem; border-top: 1px solid var(--border);
+    }
+    .studio-separator span {
+      font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--accent2-light); white-space: nowrap;
+    }
+    .studio-separator-line { flex: 1; height: 1px; background: var(--border); }
+
+    .studio-card {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      overflow: hidden; border: 1px solid var(--border);
+      min-height: 220px; cursor: pointer;
+      transition: border-color var(--transition);
+    }
+    .studio-card:hover { border-color: rgba(255,94,0,0.3); }
+
+    .studio-visual {
+      background: #0e1016;
+      display: flex; align-items: center; justify-content: center;
+      padding: 3rem; position: relative; overflow: hidden;
+    }
+    .studio-visual::after {
+      content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 2px;
+      background: var(--accent); transform: scaleY(0); transform-origin: top;
+      transition: transform 0.5s var(--ease);
+    }
+    .studio-card:hover .studio-visual::after { transform: scaleY(1); }
+
+    .studio-logo-text {
+      font-family: var(--font-mono);
+      font-size: 4rem; font-weight: 400; letter-spacing: -0.03em; line-height: 1;
+    }
+    .studio-logo-text .num { color: var(--accent); }
+    .studio-logo-text .dash { color: #4a7aaa; font-size: 2.5rem; vertical-align: middle; margin: 0 0.05em; }
+    .studio-logo-sub {
+      font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.25); margin-top: 0.8rem;
+    }
+
+    .studio-body {
+      padding: 2.5rem 3rem; background: var(--surface);
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .studio-tag { font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+    .studio-title { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.2; margin-bottom: 0.8rem; }
+    .studio-desc { font-size: 0.78rem; line-height: 1.8; color: var(--muted); margin-bottom: 1.5rem; }
+    .studio-link {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid rgba(255,94,0,0.35);
+      padding: 0.5rem 1.2rem; align-self: flex-start;
+      transition: background var(--transition), color var(--transition);
+    }
+    .studio-link svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .studio-link:hover { background: var(--accent); color: #fff; }
+
+    .more-projects-link {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 0.8rem; padding: 1.6rem 0 0;
+      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); transition: color var(--transition);
+    }
+    .more-projects-link span { transition: color var(--transition); }
+    .more-projects-link .arrow { color: var(--accent); font-size: 0.9rem; display: inline-block; transition: transform var(--transition); }
+    .more-projects-link:hover span { color: var(--text); }
+    .more-projects-link:hover .arrow { transform: translateX(4px); }
+
+    /* ─── CONTACT ────────────────────────────────────────────── */
+    #contact {
+      border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 8rem 3rem;
+    }
+    .contact-pre { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent2-light); margin-bottom: 2rem; }
+    .contact-heading { font-family: var(--font-serif); font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 300; line-height: 1.1; margin-bottom: 3rem; }
+    .contact-heading em { font-style: italic; color: var(--accent); }
+    .contact-links { display: flex; flex-direction: column; gap: 1.2rem; align-items: center; }
+    .contact-link { display: flex; align-items: center; gap: 1rem; font-size: 0.78rem; letter-spacing: 0.08em; color: var(--muted); transition: color var(--transition); }
+    .contact-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; flex-shrink: 0; }
+    .contact-link:hover { color: var(--accent); }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer { border-top: 1px solid var(--border); padding: 2rem 3rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-size: 0.6rem; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+    .footer-made { font-size: 0.6rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.1); }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      /* Nav: ocultar links y toggle, mostrar hamburguesa */
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links  { display: none; }
+      .lang-toggle { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-mobile-menu { display: flex; }
+
+      /* Hero */
+      #hero { padding: 0 1.5rem 4rem; }
+
+      /* Secciones */
+      section { padding: 5rem 1.5rem; }
+      #about .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+
+      /* Proyectos */
+      .projects-grid { grid-template-columns: 1fr; }
+
+      /* Tarjeta 17-70 */
+      .studio-card { grid-template-columns: 1fr; }
+      .studio-visual { padding: 2.5rem; min-height: 160px; }
+      .studio-logo-text { font-size: 3rem; }
+      .studio-body { padding: 2rem 1.8rem; }
+
+      /* Contacto y footer */
+      #contact { padding: 5rem 1.5rem; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 0.8rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">JSM</a>
+    <div class="nav-links">
+      <a href="#about"     data-es="Sobre mí"  data-en="About">Sobre mí</a>
+      <a href="#portfolio" data-es="Proyectos" data-en="Work">Proyectos</a>
+      <a href="#contact"   data-es="Contacto"  data-en="Contact">Contacto</a>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+      <span class="lang-sep">|</span>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <!-- Botón hamburguesa — visible solo en móvil -->
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Menú overlay móvil -->
+  <div class="nav-mobile-menu" id="nav-mobile-menu">
+    <a href="#about"     onclick="closeMenu()" data-es="Sobre mí"  data-en="About">Sobre mí</a>
+    <a href="#portfolio" onclick="closeMenu()" data-es="Proyectos" data-en="Work">Proyectos</a>
+    <a href="#contact"   onclick="closeMenu()" data-es="Contacto"  data-en="Contact">Contacto</a>
+    <div class="nav-mobile-lang">
+      <button class="lang-btn active" id="m-btn-es" onclick="setLang('es')">ES</button>
+      <span class="lang-sep">|</span>
+      <button class="lang-btn" id="m-btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-lines" aria-hidden="true">
+      <div class="hero-line h"></div>
+      <div class="hero-line h"></div>
+      <div class="hero-line v"></div>
+    </div>
+    <p class="hero-tag">Buenos Aires, Argentina</p>
+    <h1 class="hero-name">Juan<br><em>Santiago</em><br>Martínez</h1>
+    <div class="hero-roles">
+      <span data-es="Compositor"        data-en="Composer">Compositor</span>
+      <span data-es="Productor Musical" data-en="Music Producer">Productor Musical</span>
+      <span data-es="Diseñador Sonoro"  data-en="Sound Designer">Diseñador Sonoro</span>
+    </div>
+    <p class="hero-scroll" data-es="Desplazá para explorar" data-en="Scroll to explore">Desplazá para explorar</p>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label reveal" data-es="Sobre mí" data-en="About">Sobre mí</p>
+    <div class="about-grid">
+      <div>
+        <h2 class="about-heading reveal">
+          <span data-es="Música, sonido<br>e <em>imagen</em>" data-en="Music, sound<br>and <em>image</em>">Música, sonido<br>e <em>imagen</em></span>
+        </h2>
+        <p class="about-body reveal"
+           data-es="Compositor, productor musical y diseñador de sonido con una trayectoria vinculada al cine y los medios audiovisuales. Mi foco de trabajo es la relación Música–Sonido–Imagen como eje creativo para comprender la narrativa desde múltiples dimensiones."
+           data-en="Composer, music producer and sound designer with a career rooted in film and audiovisual media. My work centers on the Music–Sound–Image relationship as a creative axis for understanding narrative from multiple dimensions.">
+          Compositor, productor musical y diseñador de sonido con una trayectoria vinculada al cine y los medios audiovisuales. Mi foco de trabajo es la relación Música–Sonido–Imagen como eje creativo para comprender la narrativa desde múltiples dimensiones.
+        </p>
+        <p class="about-body reveal"
+           data-es="Paralelamente, exploro el vínculo entre práctica artística y pedagogía: acompañar a estudiantes en experiencias donde escucha, experimentación y pensamiento crítico se integran de forma natural."
+           data-en="In parallel, I explore the connection between artistic practice and pedagogy: supporting students in experiences where listening, experimentation, and critical thinking integrate naturally.">
+          Paralelamente, exploro el vínculo entre práctica artística y pedagogía: acompañar a estudiantes en experiencias donde escucha, experimentación y pensamiento crítico se integran de forma natural.
+        </p>
+        <div class="about-skills reveal">
+          <p class="skills-title" data-es="Herramientas" data-en="Tools">Herramientas</p>
+          <div class="skills-list">
+            <span class="skill-tag">Ableton Live</span>
+            <span class="skill-tag">Pro Tools</span>
+            <span class="skill-tag">Reaper</span>
+            <span class="skill-tag">Reason</span>
+            <span class="skill-tag">MIDI</span>
+            <span class="skill-tag">Mezcla</span>
+            <span class="skill-tag">Diseño Sonoro</span>
+          </div>
+        </div>
+
+        <a href="cv-juan-santiago-martinez.pdf" download class="cv-download reveal">
+          <span class="cv-download-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 3v12M7 11l5 5 5-5M3 18v1a2 2 0 002 2h14a2 2 0 002-2v-1"/>
+            </svg>
+          </span>
+          <span class="cv-download-text">
+            <span class="cv-download-title" data-es="Descargar CV" data-en="Download CV">Descargar CV</span>
+            <span class="cv-download-sub" data-es="Currículum Vitae · PDF" data-en="Curriculum Vitae · PDF">Currículum Vitae · PDF</span>
+          </span>
+          <span class="cv-download-arrow">→</span>
+        </a>
+
+      </div>
+      <div class="about-education">
+        <div class="edu-item reveal">
+          <p class="edu-year">2026 — <span data-es="en curso" data-en="ongoing">en curso</span></p>
+          <p class="edu-title" data-es="Profesorado en Artes Musicales" data-en="Music Arts Teaching Degree">Profesorado en Artes Musicales</p>
+          <p class="edu-inst">Universidad Nacional de Artes</p>
+        </div>
+        <div class="edu-item reveal">
+          <p class="edu-year">2026 — <span data-es="en curso" data-en="ongoing">en curso</span></p>
+          <p class="edu-title" data-es="Máster en Composición para Cine, Series y Publicidad" data-en="Master's in Film, TV & Advertising Composition">Máster en Composición para Cine, Series y Publicidad</p>
+          <p class="edu-inst">EARTES — Málaga</p>
+        </div>
+        <div class="edu-item reveal">
+          <p class="edu-year">2026 — <span data-es="Fase de Tesis" data-en="Thesis Stage">Fase de Tesis</span></p>
+          <p class="edu-title" data-es="Lic. en Composición con Medios Electroacústicos" data-en="B.A. in Electroacoustic Composition">Lic. en Composición con Medios Electroacústicos</p>
+          <p class="edu-inst">Universidad Nacional de Artes</p>
+        </div>
+        <div class="edu-item reveal">
+          <p class="edu-year">2020 — 2023</p>
+          <p class="edu-title" data-es="Diseñador de Sonido" data-en="Sound Design">Diseñador de Sonido</p>
+          <p class="edu-inst">Universidad Nacional de Artes</p>
+        </div>
+        <div class="edu-item reveal">
+          <p class="edu-year">2018 — 2019</p>
+          <p class="edu-title" data-es="Música Cinematográfica" data-en="Film Music">Música Cinematográfica</p>
+          <p class="edu-inst">Universidad Católica Argentina</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REEL -->
+  <section id="reel" style="padding: 7rem 3rem; max-width: 1100px; margin: 0 auto;">
+    <p class="section-label" data-es="Reel corto" data-en="Short Reel">Reel corto</p>
+    <div class="reel-player">
+      <iframe
+        src="https://www.youtube.com/embed/QpExXYv10rU?rel=0&modestbranding=1"
+        title="Reel corto — Juan Santiago Martínez"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <div class="reel-meta">
+      <span class="reel-title" data-es="Reel · composición &amp; diseño sonoro" data-en="Reel · composition &amp; sound design">Reel · composición &amp; diseño sonoro</span>
+      <span class="reel-year">2025</span>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio" style="max-width:100%; padding-left:0; padding-right:0;">
+    <div style="max-width:1100px; margin:0 auto; padding:0 3rem 3rem;">
+      <p class="section-label reveal" data-es="Proyectos destacados" data-en="Selected Work">Proyectos destacados</p>
+    </div>
+
+    <div class="projects-grid reveal">
+
+      <!-- 01 · Ornella -->
+      <a href="https://www.youtube.com/watch?v=5Qg-mB2mv7k" target="_blank" rel="noopener" class="project-card">
+        <div class="project-img">
+          <img src="img/ornella.jpg" alt="Ornella" />
+        </div>
+        <div class="project-body">
+          <p class="project-type" data-es="Largometraje" data-en="Feature Film">Largometraje</p>
+          <h3 class="project-title">Ornella</h3>
+          <p class="project-client">Orenoque Films</p>
+          <p class="project-role" data-es="Música original" data-en="Original Score">Música original</p>
+        </div>
+      </a>
+
+      <!-- 02 · De abajo hacia arriba -->
+      <a href="https://www.tiktok.com/@lavirgenfilms/video/7518070350375030022" target="_blank" rel="noopener" class="project-card">
+        <div class="project-img">
+          <img src="img/de-abajo.jpg" alt="De abajo hacia arriba" />
+        </div>
+        <div class="project-body">
+          <p class="project-type" data-es="Serie · TikTok" data-en="Series · TikTok">Serie · TikTok</p>
+          <h3 class="project-title">De abajo hacia arriba</h3>
+          <p class="project-client">La Virgen Films</p>
+          <p class="project-role" data-es="Música original" data-en="Original Score">Música original</p>
+        </div>
+      </a>
+
+      <!-- 03 · Thanks Donald -->
+      <a href="https://www.imdb.com/es-es/title/tt38237111/" target="_blank" rel="noopener" class="project-card">
+        <div class="project-img">
+          <img src="img/thanks-donald.jpg" alt="Thanks Donald" />
+        </div>
+        <div class="project-body">
+          <p class="project-type" data-es="Cortometraje" data-en="Short Film">Cortometraje</p>
+          <h3 class="project-title">Thanks Donald</h3>
+          <p class="project-client">Orenoque Films</p>
+          <p class="project-role" data-es="Música original" data-en="Original Score">Música original</p>
+        </div>
+      </a>
+
+      <!-- 04 · Disidentes -->
+      <a href="https://www.proimagenescolombia.com/secciones/cine_colombiano/peliculas_colombianas/pelicula_plantilla.php?id_pelicula=2971" target="_blank" rel="noopener" class="project-card">
+        <div class="project-img">
+          <img src="img/disidentes.jpg" alt="Disidentes" />
+        </div>
+        <div class="project-body">
+          <p class="project-type" data-es="Largometraje" data-en="Feature Film">Largometraje</p>
+          <h3 class="project-title">Disidentes</h3>
+          <p class="project-client">Alexander Moscoso</p>
+          <p class="project-role" data-es="Música original" data-en="Original Score">Música original</p>
+        </div>
+      </a>
+
+      <!-- 05 · La fe del minero -->
+      <a href="https://www.youtube.com/watch?v=x3aUu89i7UY" target="_blank" rel="noopener" class="project-card">
+        <div class="project-img">
+          <img src="img/la-fe-del-minero.png" alt="La fe del minero" />
+        </div>
+        <div class="project-body">
+          <p class="project-type" data-es="Documental" data-en="Documentary">Documental</p>
+          <h3 class="project-title">La fe del minero</h3>
+          <p class="project-client">LAP Productora</p>
+          <p class="project-role" data-es="Música original" data-en="Original Score">Música original</p>
+        </div>
+      </a>
+
+      <!-- celda "Ver todos los proyectos" -->
+      <a href="proyectos.html" class="project-card all-projects-card">
+        <div class="all-projects-inner">
+          <span class="all-projects-label" data-es="Catálogo completo" data-en="Full catalogue">Catálogo completo</span>
+          <p class="all-projects-heading" data-es="Ver todos<br>los proyectos" data-en="View all<br>projects">Ver todos<br>los proyectos</p>
+          <span class="all-projects-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Tarjeta especial 17-70 -->
+    <div style="max-width:1100px; margin:0 auto;">
+
+      <div class="studio-separator reveal">
+        <span data-es="También" data-en="Also">También</span>
+        <div class="studio-separator-line"></div>
+      </div>
+
+      <a href="https://sonidoymusica.wixsite.com/17-70" target="_blank" rel="noopener" class="studio-card reveal">
+        <div class="studio-visual">
+          <img src="img/17-70.png" alt="17-70 Sonido & Música" style="max-width:240px; width:75%; object-fit:contain;" />
+        </div>
+        <div class="studio-body">
+          <div>
+            <p class="studio-tag" data-es="Co-fundador / Productor asociado" data-en="Co-founder / Associate Producer">Co-fundador / Productor asociado</p>
+            <h3 class="studio-title" data-es="17-70 Sonido & Música" data-en="17-70 Sound & Music">17-70 Sonido & Música</h3>
+            <p class="studio-desc"
+               data-es="Estudio de producción musical y diseño sonoro. Un espacio creativo donde convergen la composición, la experimentación sonora y la producción audiovisual.<br><br><em>Somos músicos que aman el cine.</em>"
+               data-en="Music production and sound design studio. A creative space where composition, sonic experimentation and audiovisual production converge.<br><br><em>We are musicians who love cinema.</em>">
+              Estudio de producción musical y diseño sonoro. Un espacio creativo donde convergen la composición, la experimentación sonora y la producción audiovisual.<br><br><em>Somos músicos que aman el cine.</em>
+            </p>
+          </div>
+          <span class="studio-link">
+            <span data-es="Visitar sitio" data-en="Visit site">Visitar sitio</span>
+            <svg viewBox="0 0 12 12"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="contact-pre reveal" data-es="Trabajemos juntos" data-en="Let's work together">Trabajemos juntos</p>
+    <h2 class="contact-heading reveal">
+      <span data-es="¿Tenés un<br>proyecto <em>en mente</em>?" data-en="Got a<br><em>project</em> in mind?">¿Tenés un<br>proyecto <em>en mente</em>?</span>
+    </h2>
+    <div class="contact-links">
+      <a href="/cdn-cgi/l/email-protection#553f26343b213c34323a383427213c3b302f38737663616e3238343c397b363a38" class="contact-link reveal">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 6l10 7 10-7"/></svg>
+        jsantiagomartinezm&#64;gmail.com
+      </a>
+      <a href="tel:+5491121868858" class="contact-link reveal">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.22 1.18 2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>
+        (+54) 11 2186 8858
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p class="footer-copy">© 2025 Juan Santiago Martínez M.</p>
+    <p class="footer-made">jsm · música · sonido · imagen</p>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // ── Menú hamburguesa ─────────────────────────────────────────
+    function toggleMenu() {
+      const menu = document.getElementById('nav-mobile-menu');
+      const btn  = document.getElementById('nav-hamburger');
+      const open = menu.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    function closeMenu() {
+      document.getElementById('nav-mobile-menu').classList.remove('open');
+      document.getElementById('nav-hamburger').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ── Language toggle — sincroniza barra + overlay ─────────────
+    function setLang(lang) {
+      ['btn-es','m-btn-es'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('active', lang === 'es');
+      });
+      ['btn-en','m-btn-en'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('active', lang === 'en');
+      });
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-es]').forEach(el => {
+        const t = el.getAttribute('data-' + lang);
+        if (t) el.innerHTML = t;
+      });
+    }
+
+    // ── Scroll reveal ────────────────────────────────────────────
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); ro.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+    // ── Active nav link on scroll ────────────────────────────────
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) current = s.id; });
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    });
+  </script>
+</body>
+</html>
